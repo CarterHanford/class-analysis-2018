@@ -1,0 +1,13 @@
+---
+title: "Class Analysis R Notebook"
+author: "Carter Hanford"
+date: '(`r format(Sys.time(), "%B %d, %Y")`)'
+output: 
+  github_document: default
+  html_notebook: default 
+---
+
+### Introduction
+
+This is the R notebook for my empirical study on social class, race, and socioeconomic status in urban spaces.This project was completed in December 2018 for my sociology capstone at Saint Louis University. The project spanned 6 months, with brainstorming beginning at the end of summer in late July, and ending in December with a presentation discussing my findings in front of faculty in the sociology department at SLU.
+

@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1539131508842.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4193303460",
+    "id" : "A08B9D2F",
+    "lastKnownWriteTime" : 1539131837,
+    "last_content_update" : 1539131837874,
+    "path" : "~/GitHub/class-analysis-2018/documentation/class-analysis r notebook.Rmd",
+    "project_path" : "documentation/class-analysis r notebook.Rmd",
+    "properties" : {
+        "chunk_output_type" : "inline",
+        "cursorPosition" : "13,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
