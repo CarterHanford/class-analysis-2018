@@ -1,0 +1,4 @@
+"0","ggplot(data = gss2016Clean, mapping = aes(x = PRESTG10, y = SEI10)) +"
+"0","  geom_point(mapping = aes(fill = as.factor(RACE)), pch = 21, size = 2, position = ""jitter"") +"
+"0","  geom_smooth(method = ""lm"", size = 2) +"
+"0","  theme_hc(base_size = 14)"

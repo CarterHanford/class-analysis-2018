@@ -1,0 +1,2 @@
+"0","influenceObs <- as.integer(row.names(influence))"
+"0","printObs(gss2016Clean, values = influenceObs)"

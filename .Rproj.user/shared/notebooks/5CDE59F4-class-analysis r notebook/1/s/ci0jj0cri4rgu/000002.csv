@@ -1,0 +1,7 @@
+"0","gssDatasub$Fulltime <- as.numeric(gssDatasub$Fulltime)"
+"0","gssDatasub$Parttime <- as.numeric(gssDatasub$Parttime)"
+"0","gssDatasub$NotWorking <- as.numeric(gssDatasub$NotWorking)"
+"0","gssDatasub$Retired <- as.numeric(gssDatasub$Retired)"
+"0","gssDatasub$AtSchool <- as.numeric(gssDatasub$AtSchool)"
+"0","gssDatasub$KeepingHouse <- as.numeric(gssDatasub$KeepingHouse)"
+"0","gssDatasub$Unemployed <- as.numeric(gssDatasub$Unemployed)"

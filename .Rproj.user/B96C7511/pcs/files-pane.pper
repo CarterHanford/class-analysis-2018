@@ -1,0 +1,9 @@
+{
+    "path" : "~/GitHub/class-analysis-2018/data/cleanData",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}

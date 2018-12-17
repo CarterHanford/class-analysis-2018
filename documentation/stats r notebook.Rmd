@@ -1,0 +1,128 @@
+---
+title: "Class Analysis R Notebook"
+author: "Carter Hanford"
+date: '(`r format(Sys.time(), "%B %d, %Y")`)'
+output: 
+  github_document: default
+  html_notebook: default 
+---
+
+## Introduction
+
+This is the R notebook for my empirical study on race, class, and socioeconomic status in urban spaces.This project was completed in December 2018 for my sociology capstone at Saint Louis University. The project spanned 6 months, with brainstorming beginning at the end of summer in late July, and ending in December with a presentation discussing my findings in front of faculty in the sociology department at SLU.
+
+This R notebook will specifically deal with code surrounding statistical testing.
+
+## Load Dependencies
+
+```{r dependencies}
+library(dplyr)
+library(ggplot2)
+library(ggthemes)
+library(readr)
+library(ggstatsplot)
+library(here)
+library(knitr)
+library(ggridges)
+library(e1071)
+library(plyr)
+```
+
+## Load Data
+
+```{r}
+read.csv(here("data", "cleanData", "gss2016Clean.csv")) 
+```
+
+```{r white}
+ggplot(data = gss2016Clean) +
+  geom_bar(mapping = aes(x = White, fill = White, stat = "identity")) 
+```
+
+```{r}
+count(gss2016Clean, 'RACE')
+```
+
+
+
+## Plots
+
+```{r}
+plot3 <- ggplot(data = gss2016Clean, mapping = aes(x = INCOME16, y = SEI10)) +
+  geom_point(mapping = aes(fill = as.factor(RACE)), pch = 21, size = 3, position = "jitter") +
+  geom_smooth(method = "lm", size = 2) +
+  theme_hc(base_size = 14) +
+  labs(
+    title = "Socioeconomic Status and Total Family Income", 
+    caption = "Data via General Social Survey 2016", 
+    x = "Total Family Income",
+    y = "SES Score") + 
+  theme(legend.key.size = unit(1, units = "cm")) +
+  scale_fill_discrete(name = "Race", 
+                      labels = c("White", "Black", "Other"))
+
+ggsave(here("results", "SES_TotINCOME.png"), plot3, width = 10, height = 5.62, dpi = 500)
+```
+
+```{r}
+plot2 <- ggplot(data = gss2016Clean, mapping = aes(x = EDUC, y = SEI10)) +
+  geom_point(mapping = aes(fill = as.factor(RACE)), pch = 21, size = 2, position = "jitter") +
+  geom_smooth(method = "lm", size = 2) +
+  theme_hc(base_size = 14) +
+  labs(
+    title = "Socioeconomic Status and Level of Education", 
+    caption = "Data via General Social Survey 2016", 
+    x = "Education Level",
+    y = "SES Score") + 
+  theme(legend.key.size = unit(1, units = "cm")) +
+  scale_fill_discrete(name = "Race", 
+                      labels = c("White", "Black", "Other"))
+
+ggsave(here("results", "SES_EDULevel.png"), plot2, width = 10, height = 5.62, dpi = 500)
+```
+
+
+```{r}
+plot(density(gss2016Clean$SEI10), main="Density Plot: Socioeconomic Status", ylab="Frequency", sub=paste("Skewness:", round(e1071::skewness(gss2016Clean$SEI10), 2)))
+polygon(density(gss2016Clean$SEI10), col="lightblue")
+```
+
+```{r}
+ggplot(data = gss2016Clean, mapping = aes(SEI10)) + geom_histogram()
+```
+
+```{r}
+ggplot(data = gss2016Clean) +
+  geom_bar(mapping = aes(x = SEI10, fill = RACE))
+```
+
+## ggplot
+
+```{r histogram}
+plot4 <- ggplot(data = gss2016Clean, aes(x=SEI10)) + 
+ geom_histogram(aes(y=..density..), colour="black", fill="lightblue") +
+  theme_hc(base_size = 14) +
+  labs(
+    title = "Socioeconomic Status Score (SEI10) Histogram", 
+    caption = "Data via General Social Survey 2016", 
+    x = "SES Scores",
+    y = "Density") + 
+  theme(legend.key.size = unit(1, units = "cm"))
+
+ggsave(here("results", "SES_histogram.png"), plot4, width = 10, height = 5.62, dpi = 500)
+```
+
+```{r}
+plot5 <- ggplot(data = gss2016Clean, aes(x=SEI10)) + 
+ geom_histogram(aes(y=..density..), colour="black", fill="lightblue") +
+  geom_density(alpha=.2, fill="#FF3939") +
+  labs(
+    title = "Socioeconomic Status Score (SEI10) Histogram + Density", 
+    caption = "Data via General Social Survey 2016", 
+    x = "SES Scores",
+    y = "Density") + 
+  theme(legend.key.size = unit(1, units = "cm"))
+
+ggsave(here("results", "SES_histogram_density.png"), plot5, width = 10, height = 5.62, dpi = 500)
+```
+

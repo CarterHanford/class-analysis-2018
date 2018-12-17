@@ -1,0 +1,167 @@
+---
+title: "Regression Assumptions R Notebook"
+author: "Carter Hanford"
+date: '(`r format(Sys.time(), "%B %d, %Y")`)'
+output: 
+  github_document: default
+  html_notebook: default 
+---
+
+```{r packages}
+# tidyverse
+library(dplyr)
+library(ggplot2)
+library(tibble)
+
+# statistics
+library(car)
+library(heplots)
+library(lmtest)
+library(sandwich)
+
+# other
+library(here)
+library(stargazer)
+```
+
+
+```{r functions}
+printObs <- function(.data, values){
+  
+  .data %>%
+    filter(row_number() %in% values) %>%
+    select(SEI10, ID, INCOME16, EDUC, Black, White, Other, Male, Female, Urban, Fulltime, Parttime, NotWorking, Retired, AtSchool)
+  
+}
+```
+
+## Model 1
+
+```{r}
+model1 <- lm(SEI10 ~ Black+Other+Urban, data = gss2016Clean)
+summary(model1)
+```
+
+## Non-linearity
+
+```{r}
+crPlots(model1)
+```
+
+```{r}
+crPlot(model1, variable = "Other")
+```
+
+## Outliers
+
+```{r}
+outlierTest(model1)
+```
+
+```{r}
+bonferonni <- outlierTest(model1)
+bonferonni <- as.numeric(attr(bonferonni$p, "names"))
+
+printObs(gss2016Clean, values = bonferonni)
+```
+
+## Leverage
+
+```{r}
+p <- as.numeric(length(attr(model1$coefficients, "names")))
+n <- as.numeric(nrow(model1$model))
+```
+
+```{r}
+LeveragePoints2 <- which(hatvalues(model1) > (2*p)/n)
+
+printObs(gss2016Clean, values = LeveragePoints2)
+```
+
+```{r}
+LeveragePoints3 <- which(hatvalues(model1) > (3*p)/n)
+
+printObs(gss2016Clean, values = LeveragePoints3)
+```
+
+## Cook's Distance
+
+```{r}
+cooksD1 <- which(cooks.distance(model1) > 1)
+```
+
+```{r}
+cooksDHalf <- which(cooks.distance(model1) > .5)
+```
+
+```{r}
+plot(cooks.distance(model1))
+abline(h = c(1,.5), col="red", lty=2)
+```
+
+```{r}
+cooksDborderline <- which(cooks.distance(model1) > .08)
+
+printObs(gss2016Clean, values = cooksDborderline)
+```
+
+## Influence plot
+
+```{r}
+influence <- influencePlot(model1)
+```
+
+```{r}
+influenceObs <- as.integer(row.names(influence))
+
+printObs(gss2016Clean, values = influenceObs)
+```
+
+## Advanced Assumptions
+
+```{r}
+qqPlot <- qqPlot(model1)
+```
+
+```{r}
+printObs(gss2016Clean, qqPlot)
+```
+
+## Homoskedastic Errors
+
+```{r}
+plot(model1, which = 1)
+```
+
+```{r}
+bptest(model1)
+```
+
+## Auto-correlation
+
+```{r}
+durbinWatsonTest(model1)
+```
+
+## Multi-collinearity
+
+```{r}
+sqrt(vif(model1))
+```
+
+```{r}
+mean(sqrt(vif(model1)))
+```
+
+## Adjusting the model
+
+```{r}
+flaggedObs <- c(18, 246, 265, 357, 374, 491, 493, 494, 496, 859, 862, 863, 864, 880, 885, 968, 982, 1127, 1134, 1135, 
+                1137, 1198, 1206, 1327, 1428, 1454, 1486, 1487, 1937, 2353, 2483, 2549, 2560, 2579, 2582, 2602, 2613, 2663, 2666, 2668, 2669, 2676, 2772, 2801)
+
+gss2016Clean %>%
+  mutate(insample = ifelse(ID %in% flaggedObs, TRUE, FALSE)) %>%
+  filter(insample == FALSE) %>%
+  select(-insample) -> gss2016CleanSubReal
+```
+

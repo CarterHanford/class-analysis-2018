@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1543508096879.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3554839800",
+    "id" : "20484791",
+    "lastKnownWriteTime" : 1543511105,
+    "last_content_update" : 1543883129165,
+    "path" : "~/GitHub/class-analysis-2018/documentation/assumption testing r notebook.Rmd",
+    "project_path" : "documentation/assumption testing r notebook.Rmd",
+    "properties" : {
+        "chunk_output_type" : "inline",
+        "cursorPosition" : "157,6",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

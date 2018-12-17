@@ -1,0 +1,2 @@
+"0","LeveragePoints2 <- which(hatvalues(model1) > (2*p)/n)"
+"0","printObs(gss2016Clean, values = LeveragePoints2)"

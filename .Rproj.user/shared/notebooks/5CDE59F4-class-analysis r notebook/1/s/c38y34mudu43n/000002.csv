@@ -1,0 +1,3 @@
+"0","gssDatasub %>%"
+"0","  mutate(Married = ifelse(MARITAL == ""(1) MARRIED"", TRUE, FALSE)) %>%"
+"0","  mutate(NotMarried = ifelse(MARITAL == ""(5) NEVER MARRIED"" | MARITAL == ""(2) WIDOWED"" | MARITAL == ""(3) DIVORCED"" | MARITAL == ""(4) SEPARATED"", TRUE, FALSE)) -> gssDatasub"

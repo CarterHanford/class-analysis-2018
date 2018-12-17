@@ -1,0 +1,6 @@
+"0","gssDatasub %>%"
+"0","  mutate(Black = ifelse(RACE == ""(2) BLACK"", TRUE, FALSE)) %>%"
+"0","  mutate(White = ifelse(RACE == ""(1) WHITE"", TRUE, FALSE)) %>%"
+"0","  mutate(Other = ifelse(RACE == ""(3) OTHER"", TRUE, FALSE)) %>%"
+"0","  mutate(Male = ifelse(SEX == ""(1) MALE"", TRUE, FALSE)) %>%"
+"0","  mutate(Female = ifelse(SEX == ""(2) FEMALE"", TRUE, FALSE)) -> gssDatasub"

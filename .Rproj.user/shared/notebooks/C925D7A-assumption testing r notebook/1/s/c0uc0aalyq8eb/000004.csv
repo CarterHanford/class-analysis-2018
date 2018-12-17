@@ -1,0 +1,2 @@
+"0","cooksDborderline <- which(cooks.distance(model1) > .08)"
+"0","printObs(gss2016Clean, values = cooksDborderline)"

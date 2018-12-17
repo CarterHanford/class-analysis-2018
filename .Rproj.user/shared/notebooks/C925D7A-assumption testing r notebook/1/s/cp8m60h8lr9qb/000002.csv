@@ -1,0 +1,1 @@
+"0","cooksD1 <- which(cooks.distance(model1) > 1)"

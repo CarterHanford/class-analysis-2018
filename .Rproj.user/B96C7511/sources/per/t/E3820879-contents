@@ -1,0 +1,37 @@
+---
+title: "Race, Class, and Socioeconomic Status"
+author: "Carter Hanford"
+date: '(`r format(Sys.time(), "%B %d, %Y")`)'
+output: 
+  word_document:
+    reference_docx: ../data/style.docx
+---
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+# tidyverse packages
+library(dplyr)        # data cleaning
+library(tidyr)
+
+# other packages
+library(here)         # file path management
+library(knitr)        # support for document knitting
+library(stringi)
+library(stargazer)
+
+# load functions
+source(here("source", "tidyFreq.R"))
+
+# load data
+gss16Data <- readr::read_csv(here("data", "cleanData", "gss2016Clean.csv"))
+```
+
+## Full Model
+
+```{r}
+stargazer(model1, model2, model3, model4, 
+          title = "SES Regression Tables",
+          add.lines = list(c("AIC", aic1, aic2, aic3, aic4), c("BIC", bic1, bic2, bic3, bic4)),
+          omit.stat = "rsq", df = FALSE,
+          type = "html", out = "models.html")
+```
+

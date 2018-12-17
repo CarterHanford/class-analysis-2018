@@ -1,0 +1,8 @@
+"0","gssDatasub$Black <- as.numeric(gssDatasub$Black)"
+"0","gssDatasub$White <- as.numeric(gssDatasub$White)"
+"0","gssDatasub$Other <- as.numeric(gssDatasub$Other)"
+"0","gssDatasub$Male <- as.numeric(gssDatasub$Male)"
+"0","gssDatasub$Female <- as.numeric(gssDatasub$Female)"
+"0","gssDatasub$RACE <- as.numeric(gssDatasub$RACE)"
+"0","gssDatasub$Married <- as.numeric(gssDatasub$Married)"
+"0","gssDatasub$NotMarried <- as.numeric(gssDatasub$NotMarried)"

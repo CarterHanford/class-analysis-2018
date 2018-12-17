@@ -1,0 +1,2 @@
+"0","gss2016Clean %>%"
+"0","  select(Black, Other, INCOME16, PRESTG10, EDUC, WRKSTAT, Female) -> gss2016CleanSub"

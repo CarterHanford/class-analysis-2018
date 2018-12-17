@@ -1,0 +1,8 @@
+"0","gssDatasub %>%"
+"0","  mutate(Fulltime = ifelse(WRKSTAT == ""(1) WORKING FULLTIME"", TRUE, FALSE)) %>%"
+"0","  mutate(Parttime = ifelse(WRKSTAT == ""(2) WORKING PARTTIME"", TRUE, FALSE)) %>%"
+"0","  mutate(NotWorking = ifelse(WRKSTAT == ""(3) TEMP NOT WORKING"", TRUE, FALSE))%>%"
+"0","  mutate(Unemployed = ifelse(WRKSTAT == ""(4) UNEMPL, LAID OFF"", TRUE, FALSE)) %>%"
+"0","  mutate(KeepingHouse = ifelse(WRKSTAT == ""(7) KEEPING HOUSE"" | WRKSTAT == ""(8) OTHER"", TRUE, FALSE)) %>%"
+"0","  mutate(Retired = ifelse(WRKSTAT == ""(5) RETIRED"", TRUE, FALSE)) %>%"
+"0","  mutate(AtSchool = ifelse(WRKSTAT == ""(6) SCHOOL"", TRUE, FALSE)) -> gssDatasub"

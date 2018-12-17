@@ -1,0 +1,1 @@
+"0","gssDatasub$Urban <- as.numeric(gssDatasub$Urban)"

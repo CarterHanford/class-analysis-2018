@@ -173,19 +173,201 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Class Analysis R Notebook</h1>
 <h4 class="author"><em>Carter Hanford</em></h4>
-<h4 class="date"><em>(October 09, 2018)</em></h4>
+<h4 class="date"><em>(December 04, 2018)</em></h4>
 
 </div>
 
 
 <!-- rnb-text-begin -->
-<div id="introduction" class="section level3">
-<h3>Introduction</h3>
-<p>This is the R notebook for my empirical study on social class, race, and socioeconomic status in urban spaces.This project was completed in December 2018 for my sociology capstone at Saint Louis University. The project spanned 6 months, with brainstorming beginning at the end of summer in late July, and ending in December with a presentation discussing my findings in front of faculty in the sociology department at SLU.</p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This is the R notebook for my empirical study on race, class, and socioeconomic status in urban spaces.This project was completed in December 2018 for my sociology capstone at Saint Louis University. The project spanned 6 months, with brainstorming beginning at the end of summer in late July, and ending in December with a presentation discussing my findings in front of faculty in the sociology department at SLU.</p>
+</div>
+<div id="load-dependencies" class="section level2">
+<h2>Load Dependencies</h2>
+<p>The following code chunk will load the packages necessary for our analysis.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShoZXJlKSAjIGZpbGUgZGlyZWN0b3J5XG5saWJyYXJ5KGRwbHlyKSAjIGRhdGEgY2xlYW5pbmdcbmxpYnJhcnkoamFuaXRvcikgIyBkYXRhIGNsZWFuaW5nXG5saWJyYXJ5KG5hbmlhcikgIyBtaXNzaW5nIGRhdGEgYW5hbHlzaXNcbmxpYnJhcnkocmVhZHIpICMgd3JpdGluZyBjc3YgZmlsZXNcbmBgYCJ9 -->
+<pre class="r"><code>library(here) # file directory
+library(dplyr) # data cleaning
+library(janitor) # data cleaning
+library(naniar) # missing data analysis
+library(readr) # writing csv files</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="load-data" class="section level2">
+<h2>Load Data</h2>
+<p>The following code chunk will load the 2016 General Social Survey data into our global network.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubG9hZChoZXJlKFwiZGF0YVwiLCBcInJhd0RhdGFcIiwgXCJnc3MxNi5yZGFcIikpXG5gYGAifQ== -->
+<pre class="r"><code>load(here(&quot;data&quot;, &quot;rawData&quot;, &quot;gss16.rda&quot;))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="part-1-cleaning-the-data" class="section level2">
+<h2>Part 1: Cleaning the Data</h2>
+<p>The file we just loaded into our global environment contains all of the data in the 2016 GSS. This includes evey single category and every single observation. Before the cleaning begins, the GSS data has 961 variables and 2867 observations.</p>
+<p>Our analysis revolves around social class, race, and socioeconomic status. Therefore, we do not need all of the variables in the data set. Since we are looking at different variables that influence socioeconomic status, we will designate <code>SEI10</code> as our dependent variable and sole outcome. By anchoring socioeconomic status as our dependent variable, we can now select other variables from the GSS that reflect class and race characteristics. Firstly, we will select <code>ID</code>, which simply tells us the ID number of the respondent Gender,race, and age are obviously important here, so we will also select the variables <code>SEX</code>, <code>RACE</code>, and <code>AGE</code>.</p>
+<p>Since socioeconomic status is the outcome, variables related to income and the work force would be imporant to include. We will also select the variables, <code>RINCOME</code>, <code>WRKSTAT</code>, <code>HRS1</code>, <code>PRESTIGE</code>.</p>
+<ul>
+<li><code>RINCOME</code> represents the average income of the respondent last year.</li>
+<li><code>WRKSTAT</code> represents the labor force status of the respondent.</li>
+<li><code>HRS1</code> represents the number of hours the respondent worked last week..</li>
+<li><code>PRESTIGE</code> represents the respondents occupational prestige score.</li>
+</ul>
+<p>Education is also important in understanding socioeconomic status, so we will also select the <code>EDUC</code> variable to tell us the highest level of education completed by the respondent.</p>
+<p>Finally, it is important to note that the purpose of the General Social Survey is to represent the United States population to the best of its ability. This means that the GSS aims to include every single respondent from every single region. Our analysis is only interested in urban areas, so we will include the variable, <code>SRCBELT</code> to designate which areas of the U.S. we are interested in.</p>
+<div id="variable-select-filter" class="section level3">
+<h3>Variable Select / Filter</h3>
+<p>Now we will actually select these variables from our data set.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ3NzMTYgJT4lXG4gIHNlbGVjdChTRUkxMCwgSUQsIFNFWCwgUkFDRSwgQUdFLCBJTkNPTUUxNiwgV1JLU1RBVCwgRURVQywgU1JDQkVMVCwgTUFSSVRBTCkgLT4gZ3NzRGF0YVxuYGBgIn0= -->
+<pre class="r"><code>gss16 %&gt;%
+  select(SEI10, ID, SEX, RACE, AGE, INCOME16, WRKSTAT, EDUC, SRCBELT, MARITAL) -&gt; gssData</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Now, since we want to focus on metropolitan areas, we will filter <code>SRCBELT</code> into 1, 2, and 3, which accurately describes the makeup of most metropolitan cities.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ3NzRGF0YSAlPiVcbiAgbXV0YXRlKFVyYmFuID0gaWZlbHNlKFNSQ0JFTFQgPT0gXCIoMSkgMTIgTFJHU1QgU01TQSdTXCIgfCBTUkNCRUxUID09IFwiKDIpIFNNU0EnUyAxMy0xMDBcIiB8IFNSQ0JFTFQgPT0gXCIoMykgU1VCVVJCLCAxMiBMUkdTVFwiIHwgU1JDQkVMVCA9PSBcIig1KSBPVEhFUiBVUkJBTlwiLCBUUlVFLCBGQUxTRSkpIC0+IGdzc0RhdGFzdWJcbmBgYCJ9 -->
+<pre class="r"><code>gssData %&gt;%
+  mutate(Urban = ifelse(SRCBELT == &quot;(1) 12 LRGST SMSA'S&quot; | SRCBELT == &quot;(2) SMSA'S 13-100&quot; | SRCBELT == &quot;(3) SUBURB, 12 LRGST&quot; | SRCBELT == &quot;(5) OTHER URBAN&quot;, TRUE, FALSE)) -&gt; gssDatasub</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ3NzRGF0YXN1YiRVcmJhbiA8LSBhcy5udW1lcmljKGdzc0RhdGFzdWIkVXJiYW4pXG5gYGAifQ== -->
+<pre class="r"><code>gssDatasub$Urban &lt;- as.numeric(gssDatasub$Urban)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ3NzRGF0YXN1YiAlPiVcbiAgbXV0YXRlKE1hcnJpZWQgPSBpZmVsc2UoTUFSSVRBTCA9PSBcIigxKSBNQVJSSUVEXCIsIFRSVUUsIEZBTFNFKSkgJT4lXG4gIG11dGF0ZShOb3RNYXJyaWVkID0gaWZlbHNlKE1BUklUQUwgPT0gXCIoNSkgTkVWRVIgTUFSUklFRFwiIHwgTUFSSVRBTCA9PSBcIigyKSBXSURPV0VEXCIgfCBNQVJJVEFMID09IFwiKDMpIERJVk9SQ0VEXCIgfCBNQVJJVEFMID09IFwiKDQpIFNFUEFSQVRFRFwiLCBUUlVFLCBGQUxTRSkpIC0+IGdzc0RhdGFzdWJcbmBgYCJ9 -->
+<pre class="r"><code>gssDatasub %&gt;%
+  mutate(Married = ifelse(MARITAL == &quot;(1) MARRIED&quot;, TRUE, FALSE)) %&gt;%
+  mutate(NotMarried = ifelse(MARITAL == &quot;(5) NEVER MARRIED&quot; | MARITAL == &quot;(2) WIDOWED&quot; | MARITAL == &quot;(3) DIVORCED&quot; | MARITAL == &quot;(4) SEPARATED&quot;, TRUE, FALSE)) -&gt; gssDatasub</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>We see that there are instances of missing data. Typically, for data analyses, we try not to use variables with more thatn 5% of missing data present. <code>INCOME16</code> has 9.4% missing data, but it is one of the most important indicators of socioeconomic status, so we will still include it in our analysis and be sure to address the error that it may cause.</p>
+<p>We now want to create binary variables out of our <code>RACE</code> and <code>GENDER</code> variables so that it will be more intuitive to understand once we run regression tests.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ3NzRGF0YXN1YiAlPiVcbiAgbXV0YXRlKEJsYWNrID0gaWZlbHNlKFJBQ0UgPT0gXCIoMikgQkxBQ0tcIiwgVFJVRSwgRkFMU0UpKSAlPiVcbiAgbXV0YXRlKFdoaXRlID0gaWZlbHNlKFJBQ0UgPT0gXCIoMSkgV0hJVEVcIiwgVFJVRSwgRkFMU0UpKSAlPiVcbiAgbXV0YXRlKE90aGVyID0gaWZlbHNlKFJBQ0UgPT0gXCIoMykgT1RIRVJcIiwgVFJVRSwgRkFMU0UpKSAlPiVcbiAgbXV0YXRlKE1hbGUgPSBpZmVsc2UoU0VYID09IFwiKDEpIE1BTEVcIiwgVFJVRSwgRkFMU0UpKSAlPiVcbiAgbXV0YXRlKEZlbWFsZSA9IGlmZWxzZShTRVggPT0gXCIoMikgRkVNQUxFXCIsIFRSVUUsIEZBTFNFKSkgLT4gZ3NzRGF0YXN1YlxuYGBgIn0= -->
+<pre class="r"><code>gssDatasub %&gt;%
+  mutate(Black = ifelse(RACE == &quot;(2) BLACK&quot;, TRUE, FALSE)) %&gt;%
+  mutate(White = ifelse(RACE == &quot;(1) WHITE&quot;, TRUE, FALSE)) %&gt;%
+  mutate(Other = ifelse(RACE == &quot;(3) OTHER&quot;, TRUE, FALSE)) %&gt;%
+  mutate(Male = ifelse(SEX == &quot;(1) MALE&quot;, TRUE, FALSE)) %&gt;%
+  mutate(Female = ifelse(SEX == &quot;(2) FEMALE&quot;, TRUE, FALSE)) -&gt; gssDatasub</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Now that these variables are binary, we want to read them as numeric data.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ3NzRGF0YXN1YiRCbGFjayA8LSBhcy5udW1lcmljKGdzc0RhdGFzdWIkQmxhY2spXG5nc3NEYXRhc3ViJFdoaXRlIDwtIGFzLm51bWVyaWMoZ3NzRGF0YXN1YiRXaGl0ZSlcbmdzc0RhdGFzdWIkT3RoZXIgPC0gYXMubnVtZXJpYyhnc3NEYXRhc3ViJE90aGVyKVxuZ3NzRGF0YXN1YiRNYWxlIDwtIGFzLm51bWVyaWMoZ3NzRGF0YXN1YiRNYWxlKVxuZ3NzRGF0YXN1YiRGZW1hbGUgPC0gYXMubnVtZXJpYyhnc3NEYXRhc3ViJEZlbWFsZSlcbmdzc0RhdGFzdWIkUkFDRSA8LSBhcy5udW1lcmljKGdzc0RhdGFzdWIkUkFDRSlcbmdzc0RhdGFzdWIkTWFycmllZCA8LSBhcy5udW1lcmljKGdzc0RhdGFzdWIkTWFycmllZClcbmdzc0RhdGFzdWIkTm90TWFycmllZCA8LSBhcy5udW1lcmljKGdzc0RhdGFzdWIkTm90TWFycmllZClcbmBgYCJ9 -->
+<pre class="r"><code>gssDatasub$Black &lt;- as.numeric(gssDatasub$Black)
+gssDatasub$White &lt;- as.numeric(gssDatasub$White)
+gssDatasub$Other &lt;- as.numeric(gssDatasub$Other)
+gssDatasub$Male &lt;- as.numeric(gssDatasub$Male)
+gssDatasub$Female &lt;- as.numeric(gssDatasub$Female)
+gssDatasub$RACE &lt;- as.numeric(gssDatasub$RACE)
+gssDatasub$Married &lt;- as.numeric(gssDatasub$Married)
+gssDatasub$NotMarried &lt;- as.numeric(gssDatasub$NotMarried)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Next we want to follow the same binary variable creation process as we just did, but apply it to working status.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ3NzRGF0YXN1YiAlPiVcbiAgbXV0YXRlKEZ1bGx0aW1lID0gaWZlbHNlKFdSS1NUQVQgPT0gXCIoMSkgV09SS0lORyBGVUxMVElNRVwiLCBUUlVFLCBGQUxTRSkpICU+JVxuICBtdXRhdGUoUGFydHRpbWUgPSBpZmVsc2UoV1JLU1RBVCA9PSBcIigyKSBXT1JLSU5HIFBBUlRUSU1FXCIsIFRSVUUsIEZBTFNFKSkgJT4lXG4gIG11dGF0ZShOb3RXb3JraW5nID0gaWZlbHNlKFdSS1NUQVQgPT0gXCIoMykgVEVNUCBOT1QgV09SS0lOR1wiLCBUUlVFLCBGQUxTRSkpJT4lXG4gIG11dGF0ZShVbmVtcGxveWVkID0gaWZlbHNlKFdSS1NUQVQgPT0gXCIoNCkgVU5FTVBMLCBMQUlEIE9GRlwiLCBUUlVFLCBGQUxTRSkpICU+JVxuICBtdXRhdGUoS2VlcGluZ0hvdXNlID0gaWZlbHNlKFdSS1NUQVQgPT0gXCIoNykgS0VFUElORyBIT1VTRVwiIHwgV1JLU1RBVCA9PSBcIig4KSBPVEhFUlwiLCBUUlVFLCBGQUxTRSkpICU+JVxuICBtdXRhdGUoUmV0aXJlZCA9IGlmZWxzZShXUktTVEFUID09IFwiKDUpIFJFVElSRURcIiwgVFJVRSwgRkFMU0UpKSAlPiVcbiAgbXV0YXRlKEF0U2Nob29sID0gaWZlbHNlKFdSS1NUQVQgPT0gXCIoNikgU0NIT09MXCIsIFRSVUUsIEZBTFNFKSkgLT4gZ3NzRGF0YXN1YlxuYGBgIn0= -->
+<pre class="r"><code>gssDatasub %&gt;%
+  mutate(Fulltime = ifelse(WRKSTAT == &quot;(1) WORKING FULLTIME&quot;, TRUE, FALSE)) %&gt;%
+  mutate(Parttime = ifelse(WRKSTAT == &quot;(2) WORKING PARTTIME&quot;, TRUE, FALSE)) %&gt;%
+  mutate(NotWorking = ifelse(WRKSTAT == &quot;(3) TEMP NOT WORKING&quot;, TRUE, FALSE))%&gt;%
+  mutate(Unemployed = ifelse(WRKSTAT == &quot;(4) UNEMPL, LAID OFF&quot;, TRUE, FALSE)) %&gt;%
+  mutate(KeepingHouse = ifelse(WRKSTAT == &quot;(7) KEEPING HOUSE&quot; | WRKSTAT == &quot;(8) OTHER&quot;, TRUE, FALSE)) %&gt;%
+  mutate(Retired = ifelse(WRKSTAT == &quot;(5) RETIRED&quot;, TRUE, FALSE)) %&gt;%
+  mutate(AtSchool = ifelse(WRKSTAT == &quot;(6) SCHOOL&quot;, TRUE, FALSE)) -&gt; gssDatasub</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ3NzRGF0YXN1YiRGdWxsdGltZSA8LSBhcy5udW1lcmljKGdzc0RhdGFzdWIkRnVsbHRpbWUpXG5nc3NEYXRhc3ViJFBhcnR0aW1lIDwtIGFzLm51bWVyaWMoZ3NzRGF0YXN1YiRQYXJ0dGltZSlcbmdzc0RhdGFzdWIkTm90V29ya2luZyA8LSBhcy5udW1lcmljKGdzc0RhdGFzdWIkTm90V29ya2luZylcbmdzc0RhdGFzdWIkUmV0aXJlZCA8LSBhcy5udW1lcmljKGdzc0RhdGFzdWIkUmV0aXJlZClcbmdzc0RhdGFzdWIkQXRTY2hvb2wgPC0gYXMubnVtZXJpYyhnc3NEYXRhc3ViJEF0U2Nob29sKVxuZ3NzRGF0YXN1YiRLZWVwaW5nSG91c2UgPC0gYXMubnVtZXJpYyhnc3NEYXRhc3ViJEtlZXBpbmdIb3VzZSlcbmdzc0RhdGFzdWIkVW5lbXBsb3llZCA8LSBhcy5udW1lcmljKGdzc0RhdGFzdWIkVW5lbXBsb3llZClcbmBgYCJ9 -->
+<pre class="r"><code>gssDatasub$Fulltime &lt;- as.numeric(gssDatasub$Fulltime)
+gssDatasub$Parttime &lt;- as.numeric(gssDatasub$Parttime)
+gssDatasub$NotWorking &lt;- as.numeric(gssDatasub$NotWorking)
+gssDatasub$Retired &lt;- as.numeric(gssDatasub$Retired)
+gssDatasub$AtSchool &lt;- as.numeric(gssDatasub$AtSchool)
+gssDatasub$KeepingHouse &lt;- as.numeric(gssDatasub$KeepingHouse)
+gssDatasub$Unemployed &lt;- as.numeric(gssDatasub$Unemployed)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>We also want all of the remaining variables, <code>INCOME16</code>, <code>WRKSTAT</code>, and <code>EDUC</code> to be numerical values so that they will adhere to our statistical tests.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ3NzRGF0YXN1YiRJTkNPTUUxNiA8LSBhcy5udW1lcmljKGdzc0RhdGFzdWIkSU5DT01FMTYpXG5nc3NEYXRhc3ViJFdSS1NUQVQgPC0gYXMubnVtZXJpYyhnc3NEYXRhc3ViJFdSS1NUQVQpXG5nc3NEYXRhc3ViJEVEVUMgPC0gYXMubnVtZXJpYyhnc3NEYXRhc3ViJEVEVUMpXG5gYGAifQ== -->
+<pre class="r"><code>gssDatasub$INCOME16 &lt;- as.numeric(gssDatasub$INCOME16)
+gssDatasub$WRKSTAT &lt;- as.numeric(gssDatasub$WRKSTAT)
+gssDatasub$EDUC &lt;- as.numeric(gssDatasub$EDUC)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Now that we have cleaned the data, we will assess missing data that may be prevelant and then get rid of it.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubWlzc192YXJfc3VtbWFyeShnc3NEYXRhc3ViKVxuYGBgIn0= -->
+<pre class="r"><code>miss_var_summary(gssDatasub)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MywibnJvdyI6MjV9LCJyZGYiOiJINHNJQUFBQUFBQUFCcjFUUzI3Q01CQTFDV2tnZ3FwU1Z4eWlxSFRSZllEUUluNVZBb0pkWllJTEZzYU9qT2xuMTl2MkZsQUhQT0Z6QUN6RmZ1L05lR1ljajhQbTVNbWJlQWdoQzltT25tME44NWFlY2lpUGl1bjZqWkI5cjBGcXVkTmZ4UmljS0dqWEhnMngyazJEN0NpWUdKZ1AvVVlBc3Y4Q3NORHVOd2E5b1Bac3VEc09POUhRSDhLdW9EbHFnQ2tLRy9XZ0N5YTM1NGZ0b2QrRkNrWnlpbmxtdzFKU01qUFU2d3QxcmpoMWh1TWxrUEdDS2dKa29CWkVRdm9lWm1DNGFaSFZrUlZhRzhZVVhXWDhEVXQxd3RPVVl5R1hsTTlCR1hHeVNwajR5WW9vZFFoSnRNT3IyS3hobnhzU1JXWG1VdkJWRkMrRVlCcVg5Ly83T3VQMmlybXVNTTZhMklrWlhxL1JvWUZCOUdaWTRlcUh4UG9HTDl5NTFzRGRobnY1eEpMaTZiRTUrUHVLNnFER21zVHF3TTlERmFYNHFrSzQ5RHF0WHozdGRycy92V3d2bkYyUktDcTRkclhTRitkY0ZKeVRGMElwVGFpNzZTRTlTWHFpdmUwd3lnWlhUckI5eUdmdlRCd0hqa0w0blBMc09UQThKY3lRVzEzL3Z2eHFJaWxYOE91MHVxNHFvVEQ0ZWJGZ29Pd1BocmIvcjEyeTJWd0VBQUE9In0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["variable"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n_miss"],"name":[2],"type":["int"],"align":["right"]},{"label":["pct_miss"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"SEI10","2":"0","3":"0"},{"1":"ID","2":"0","3":"0"},{"1":"SEX","2":"0","3":"0"},{"1":"RACE","2":"0","3":"0"},{"1":"AGE","2":"0","3":"0"},{"1":"INCOME16","2":"0","3":"0"},{"1":"WRKSTAT","2":"0","3":"0"},{"1":"EDUC","2":"0","3":"0"},{"1":"SRCBELT","2":"0","3":"0"},{"1":"MARITAL","2":"0","3":"0"},{"1":"Urban","2":"0","3":"0"},{"1":"Married","2":"0","3":"0"},{"1":"NotMarried","2":"0","3":"0"},{"1":"Black","2":"0","3":"0"},{"1":"White","2":"0","3":"0"},{"1":"Other","2":"0","3":"0"},{"1":"Male","2":"0","3":"0"},{"1":"Female","2":"0","3":"0"},{"1":"Fulltime","2":"0","3":"0"},{"1":"Parttime","2":"0","3":"0"},{"1":"NotWorking","2":"0","3":"0"},{"1":"Unemployed","2":"0","3":"0"},{"1":"KeepingHouse","2":"0","3":"0"},{"1":"Retired","2":"0","3":"0"},{"1":"AtSchool","2":"0","3":"0"}],"options":{"columns":{"min":{},"max":[10],"total":[3]},"rows":{"min":[10],"max":[10],"total":[25]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ3NzRGF0YXN1YiA8LSBuYS5vbWl0KGdzc0RhdGFzdWIpXG5gYGAifQ== -->
+<pre class="r"><code>gssDatasub &lt;- na.omit(gssDatasub)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Finally, our data is fully cleaned, and all necessary variables were converted to numeric and binary. Now we can create a new subset of the new variables, and then export it as a .csv file to our data folder.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ3NzRGF0YXN1YiAlPiVcbiAgc2VsZWN0KFNFSTEwLCBJRCwgQUdFLCBJTkNPTUUxNiwgLVdSS1NUQVQsIEVEVUMsIC1TUkNCRUxULCBSQUNFLCBCbGFjaywgV2hpdGUsIE90aGVyLCBNYWxlLCBGZW1hbGUsIFVyYmFuLCBGdWxsdGltZSwgUGFydHRpbWUsIE5vdFdvcmtpbmcsIFVuZW1wbG95ZWQsIEtlZXBpbmdIb3VzZSwgUmV0aXJlZCwgQXRTY2hvb2wpIC0+IGdzczIwMTZDbGVhblxuYGBgIn0= -->
+<pre class="r"><code>gssDatasub %&gt;%
+  select(SEI10, ID, AGE, INCOME16, -WRKSTAT, EDUC, -SRCBELT, RACE, Black, White, Other, Male, Female, Urban, Fulltime, Parttime, NotWorking, Unemployed, KeepingHouse, Retired, AtSchool) -&gt; gss2016Clean</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGVfY3N2KGdzczIwMTZDbGVhbiwgaGVyZShcImRhdGFcIiwgXCJjbGVhbkRhdGFcIiwgXCJnc3MyMDE2Q2xlYW4uY3N2XCIpKVxuYGBgIn0= -->
+<pre class="r"><code>write_csv(gss2016Clean, here(&quot;data&quot;, &quot;cleanData&quot;, &quot;gss2016Clean.csv&quot;))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
+</div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkNsYXNzIEFuYWx5c2lzIFIgTm90ZWJvb2siDQphdXRob3I6ICJDYXJ0ZXIgSGFuZm9yZCINCmRhdGU6ICcoYHIgZm9ybWF0KFN5cy50aW1lKCksICIlQiAlZCwgJVkiKWApJw0Kb3V0cHV0OiANCiAgZ2l0aHViX2RvY3VtZW50OiBkZWZhdWx0DQogIGh0bWxfbm90ZWJvb2s6IGRlZmF1bHQgDQotLS0NCg0KIyMjIEludHJvZHVjdGlvbg0KDQpUaGlzIGlzIHRoZSBSIG5vdGVib29rIGZvciBteSBlbXBpcmljYWwgc3R1ZHkgb24gc29jaWFsIGNsYXNzLCByYWNlLCBhbmQgc29jaW9lY29ub21pYyBzdGF0dXMgaW4gdXJiYW4gc3BhY2VzLlRoaXMgcHJvamVjdCB3YXMgY29tcGxldGVkIGluIERlY2VtYmVyIDIwMTggZm9yIG15IHNvY2lvbG9neSBjYXBzdG9uZSBhdCBTYWludCBMb3VpcyBVbml2ZXJzaXR5LiBUaGUgcHJvamVjdCBzcGFubmVkIDYgbW9udGhzLCB3aXRoIGJyYWluc3Rvcm1pbmcgYmVnaW5uaW5nIGF0IHRoZSBlbmQgb2Ygc3VtbWVyIGluIGxhdGUgSnVseSwgYW5kIGVuZGluZyBpbiBEZWNlbWJlciB3aXRoIGEgcHJlc2VudGF0aW9uIGRpc2N1c3NpbmcgbXkgZmluZGluZ3MgaW4gZnJvbnQgb2YgZmFjdWx0eSBpbiB0aGUgc29jaW9sb2d5IGRlcGFydG1lbnQgYXQgU0xVLg0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkNsYXNzIEFuYWx5c2lzIFIgTm90ZWJvb2siDQphdXRob3I6ICJDYXJ0ZXIgSGFuZm9yZCINCmRhdGU6ICcoYHIgZm9ybWF0KFN5cy50aW1lKCksICIlQiAlZCwgJVkiKWApJw0Kb3V0cHV0OiANCiAgZ2l0aHViX2RvY3VtZW50OiBkZWZhdWx0DQogIGh0bWxfbm90ZWJvb2s6IGRlZmF1bHQgDQotLS0NCg0KIyMgSW50cm9kdWN0aW9uDQoNClRoaXMgaXMgdGhlIFIgbm90ZWJvb2sgZm9yIG15IGVtcGlyaWNhbCBzdHVkeSBvbiByYWNlLCBjbGFzcywgYW5kIHNvY2lvZWNvbm9taWMgc3RhdHVzIGluIHVyYmFuIHNwYWNlcy5UaGlzIHByb2plY3Qgd2FzIGNvbXBsZXRlZCBpbiBEZWNlbWJlciAyMDE4IGZvciBteSBzb2Npb2xvZ3kgY2Fwc3RvbmUgYXQgU2FpbnQgTG91aXMgVW5pdmVyc2l0eS4gVGhlIHByb2plY3Qgc3Bhbm5lZCA2IG1vbnRocywgd2l0aCBicmFpbnN0b3JtaW5nIGJlZ2lubmluZyBhdCB0aGUgZW5kIG9mIHN1bW1lciBpbiBsYXRlIEp1bHksIGFuZCBlbmRpbmcgaW4gRGVjZW1iZXIgd2l0aCBhIHByZXNlbnRhdGlvbiBkaXNjdXNzaW5nIG15IGZpbmRpbmdzIGluIGZyb250IG9mIGZhY3VsdHkgaW4gdGhlIHNvY2lvbG9neSBkZXBhcnRtZW50IGF0IFNMVS4NCg0KIyMgTG9hZCBEZXBlbmRlbmNpZXMNCg0KVGhlIGZvbGxvd2luZyBjb2RlIGNodW5rIHdpbGwgbG9hZCB0aGUgcGFja2FnZXMgbmVjZXNzYXJ5IGZvciBvdXIgYW5hbHlzaXMuDQoNCmBgYHtyIGxvYWQtcGFja2FnZXN9DQpsaWJyYXJ5KGhlcmUpICMgZmlsZSBkaXJlY3RvcnkNCmxpYnJhcnkoZHBseXIpICMgZGF0YSBjbGVhbmluZw0KbGlicmFyeShqYW5pdG9yKSAjIGRhdGEgY2xlYW5pbmcNCmxpYnJhcnkobmFuaWFyKSAjIG1pc3NpbmcgZGF0YSBhbmFseXNpcw0KbGlicmFyeShyZWFkcikgIyB3cml0aW5nIGNzdiBmaWxlcw0KYGBgDQoNCiMjIExvYWQgRGF0YQ0KDQpUaGUgZm9sbG93aW5nIGNvZGUgY2h1bmsgd2lsbCBsb2FkIHRoZSAyMDE2IEdlbmVyYWwgU29jaWFsIFN1cnZleSBkYXRhIGludG8gb3VyIGdsb2JhbCBuZXR3b3JrLg0KDQpgYGB7ciBkYXRhLWxvYWR9DQpsb2FkKGhlcmUoImRhdGEiLCAicmF3RGF0YSIsICJnc3MxNi5yZGEiKSkNCmBgYA0KDQojIyBQYXJ0IDE6IENsZWFuaW5nIHRoZSBEYXRhDQoNClRoZSBmaWxlIHdlIGp1c3QgbG9hZGVkIGludG8gb3VyIGdsb2JhbCBlbnZpcm9ubWVudCBjb250YWlucyBhbGwgb2YgdGhlIGRhdGEgaW4gdGhlIDIwMTYgR1NTLiBUaGlzIGluY2x1ZGVzIGV2ZXkgc2luZ2xlIGNhdGVnb3J5IGFuZCBldmVyeSBzaW5nbGUgb2JzZXJ2YXRpb24uIEJlZm9yZSB0aGUgY2xlYW5pbmcgYmVnaW5zLCB0aGUgR1NTIGRhdGEgaGFzIDk2MSB2YXJpYWJsZXMgYW5kIDI4Njcgb2JzZXJ2YXRpb25zLiAgDQoNCk91ciBhbmFseXNpcyByZXZvbHZlcyBhcm91bmQgc29jaWFsIGNsYXNzLCByYWNlLCBhbmQgc29jaW9lY29ub21pYyBzdGF0dXMuIFRoZXJlZm9yZSwgd2UgZG8gbm90IG5lZWQgYWxsIG9mIHRoZSB2YXJpYWJsZXMgaW4gdGhlIGRhdGEgc2V0LiBTaW5jZSB3ZSBhcmUgbG9va2luZyBhdCBkaWZmZXJlbnQgdmFyaWFibGVzIHRoYXQgaW5mbHVlbmNlIHNvY2lvZWNvbm9taWMgc3RhdHVzLCB3ZSB3aWxsIGRlc2lnbmF0ZSBgU0VJMTBgIGFzIG91ciBkZXBlbmRlbnQgdmFyaWFibGUgYW5kIHNvbGUgb3V0Y29tZS4gQnkgYW5jaG9yaW5nIHNvY2lvZWNvbm9taWMgc3RhdHVzIGFzIG91ciBkZXBlbmRlbnQgdmFyaWFibGUsIHdlIGNhbiBub3cgc2VsZWN0IG90aGVyIHZhcmlhYmxlcyBmcm9tIHRoZSBHU1MgdGhhdCByZWZsZWN0IGNsYXNzIGFuZCByYWNlIGNoYXJhY3RlcmlzdGljcy4gRmlyc3RseSwgd2Ugd2lsbCBzZWxlY3QgYElEYCwgd2hpY2ggc2ltcGx5IHRlbGxzIHVzIHRoZSBJRCBudW1iZXIgb2YgdGhlIHJlc3BvbmRlbnQgR2VuZGVyLHJhY2UsIGFuZCBhZ2UgYXJlIG9idmlvdXNseSBpbXBvcnRhbnQgaGVyZSwgc28gd2Ugd2lsbCBhbHNvIHNlbGVjdCB0aGUgdmFyaWFibGVzIGBTRVhgLCBgUkFDRWAsIGFuZCBgQUdFYC4gDQoNClNpbmNlIHNvY2lvZWNvbm9taWMgc3RhdHVzIGlzIHRoZSBvdXRjb21lLCB2YXJpYWJsZXMgcmVsYXRlZCB0byBpbmNvbWUgYW5kIHRoZSB3b3JrIGZvcmNlIHdvdWxkIGJlIGltcG9yYW50IHRvIGluY2x1ZGUuIFdlIHdpbGwgYWxzbyBzZWxlY3QgdGhlIHZhcmlhYmxlcywgYFJJTkNPTUVgLCBgV1JLU1RBVGAsIGBIUlMxYCwgYFBSRVNUSUdFYC4gDQoNCiogYFJJTkNPTUVgIHJlcHJlc2VudHMgdGhlIGF2ZXJhZ2UgaW5jb21lIG9mIHRoZSByZXNwb25kZW50IGxhc3QgeWVhci4NCiogYFdSS1NUQVRgIHJlcHJlc2VudHMgdGhlIGxhYm9yIGZvcmNlIHN0YXR1cyBvZiB0aGUgcmVzcG9uZGVudC4NCiogYEhSUzFgIHJlcHJlc2VudHMgdGhlIG51bWJlciBvZiBob3VycyB0aGUgcmVzcG9uZGVudCB3b3JrZWQgbGFzdCB3ZWVrLi4NCiogYFBSRVNUSUdFYCByZXByZXNlbnRzIHRoZSByZXNwb25kZW50cyBvY2N1cGF0aW9uYWwgcHJlc3RpZ2Ugc2NvcmUuDQoNCkVkdWNhdGlvbiBpcyBhbHNvIGltcG9ydGFudCBpbiB1bmRlcnN0YW5kaW5nIHNvY2lvZWNvbm9taWMgc3RhdHVzLCBzbyB3ZSB3aWxsIGFsc28gc2VsZWN0IHRoZSBgRURVQ2AgdmFyaWFibGUgdG8gdGVsbCB1cyB0aGUgaGlnaGVzdCBsZXZlbCBvZiBlZHVjYXRpb24gY29tcGxldGVkIGJ5IHRoZSByZXNwb25kZW50Lg0KDQpGaW5hbGx5LCBpdCBpcyBpbXBvcnRhbnQgdG8gbm90ZSB0aGF0IHRoZSBwdXJwb3NlIG9mIHRoZSBHZW5lcmFsIFNvY2lhbCBTdXJ2ZXkgaXMgdG8gcmVwcmVzZW50IHRoZSBVbml0ZWQgU3RhdGVzIHBvcHVsYXRpb24gdG8gdGhlIGJlc3Qgb2YgaXRzIGFiaWxpdHkuIFRoaXMgbWVhbnMgdGhhdCB0aGUgR1NTIGFpbXMgdG8gaW5jbHVkZSBldmVyeSBzaW5nbGUgcmVzcG9uZGVudCBmcm9tIGV2ZXJ5IHNpbmdsZSByZWdpb24uIE91ciBhbmFseXNpcyBpcyBvbmx5IGludGVyZXN0ZWQgaW4gdXJiYW4gYXJlYXMsIHNvIHdlIHdpbGwgaW5jbHVkZSB0aGUgdmFyaWFibGUsIGBTUkNCRUxUYCB0byBkZXNpZ25hdGUgd2hpY2ggYXJlYXMgb2YgdGhlIFUuUy4gd2UgYXJlIGludGVyZXN0ZWQgaW4uDQoNCiMjIyBWYXJpYWJsZSBTZWxlY3QgLyBGaWx0ZXINCg0KTm93IHdlIHdpbGwgYWN0dWFsbHkgc2VsZWN0IHRoZXNlIHZhcmlhYmxlcyBmcm9tIG91ciBkYXRhIHNldC4NCg0KYGBge3IgdmFyaWFibGUtc2VsZWN0fQ0KZ3NzMTYgJT4lDQogIHNlbGVjdChTRUkxMCwgSUQsIFNFWCwgUkFDRSwgQUdFLCBJTkNPTUUxNiwgV1JLU1RBVCwgRURVQywgU1JDQkVMVCwgTUFSSVRBTCkgLT4gZ3NzRGF0YQ0KYGBgDQoNCk5vdywgc2luY2Ugd2Ugd2FudCB0byBmb2N1cyBvbiBtZXRyb3BvbGl0YW4gYXJlYXMsIHdlIHdpbGwgZmlsdGVyIGBTUkNCRUxUYCBpbnRvIDEsIDIsIGFuZCAzLCB3aGljaCBhY2N1cmF0ZWx5IGRlc2NyaWJlcyB0aGUgbWFrZXVwIG9mIG1vc3QgbWV0cm9wb2xpdGFuIGNpdGllcy4NCg0KYGBge3IgZmlsdGVyfQ0KZ3NzRGF0YSAlPiUNCiAgbXV0YXRlKFVyYmFuID0gaWZlbHNlKFNSQ0JFTFQgPT0gIigxKSAxMiBMUkdTVCBTTVNBJ1MiIHwgU1JDQkVMVCA9PSAiKDIpIFNNU0EnUyAxMy0xMDAiIHwgU1JDQkVMVCA9PSAiKDMpIFNVQlVSQiwgMTIgTFJHU1QiIHwgU1JDQkVMVCA9PSAiKDUpIE9USEVSIFVSQkFOIiwgVFJVRSwgRkFMU0UpKSAtPiBnc3NEYXRhc3ViDQpgYGANCg0KYGBge3J9DQpnc3NEYXRhc3ViJFVyYmFuIDwtIGFzLm51bWVyaWMoZ3NzRGF0YXN1YiRVcmJhbikNCmBgYA0KDQpgYGB7cn0NCmdzc0RhdGFzdWIgJT4lDQogIG11dGF0ZShNYXJyaWVkID0gaWZlbHNlKE1BUklUQUwgPT0gIigxKSBNQVJSSUVEIiwgVFJVRSwgRkFMU0UpKSAlPiUNCiAgbXV0YXRlKE5vdE1hcnJpZWQgPSBpZmVsc2UoTUFSSVRBTCA9PSAiKDUpIE5FVkVSIE1BUlJJRUQiIHwgTUFSSVRBTCA9PSAiKDIpIFdJRE9XRUQiIHwgTUFSSVRBTCA9PSAiKDMpIERJVk9SQ0VEIiB8IE1BUklUQUwgPT0gIig0KSBTRVBBUkFURUQiLCBUUlVFLCBGQUxTRSkpIC0+IGdzc0RhdGFzdWINCmBgYA0KDQoNCldlIHNlZSB0aGF0IHRoZXJlIGFyZSBpbnN0YW5jZXMgb2YgbWlzc2luZyBkYXRhLiBUeXBpY2FsbHksIGZvciBkYXRhIGFuYWx5c2VzLCB3ZSB0cnkgbm90IHRvIHVzZSB2YXJpYWJsZXMgd2l0aCBtb3JlIHRoYXRuIDUlIG9mIG1pc3NpbmcgZGF0YSBwcmVzZW50LiBgSU5DT01FMTZgIGhhcyA5LjQlIG1pc3NpbmcgZGF0YSwgYnV0IGl0IGlzIG9uZSBvZiB0aGUgbW9zdCBpbXBvcnRhbnQgaW5kaWNhdG9ycyBvZiBzb2Npb2Vjb25vbWljIHN0YXR1cywgc28gd2Ugd2lsbCBzdGlsbCBpbmNsdWRlIGl0IGluIG91ciBhbmFseXNpcyBhbmQgYmUgc3VyZSB0byBhZGRyZXNzIHRoZSBlcnJvciB0aGF0IGl0IG1heSBjYXVzZS4NCg0KV2Ugbm93IHdhbnQgdG8gY3JlYXRlIGJpbmFyeSB2YXJpYWJsZXMgb3V0IG9mIG91ciBgUkFDRWAgYW5kIGBHRU5ERVJgIHZhcmlhYmxlcyBzbyB0aGF0IGl0IHdpbGwgYmUgbW9yZSBpbnR1aXRpdmUgdG8gdW5kZXJzdGFuZCBvbmNlIHdlIHJ1biByZWdyZXNzaW9uIHRlc3RzLiANCg0KYGBge3IgYmluYXJ5LXZhcmlhYmxlc30NCmdzc0RhdGFzdWIgJT4lDQogIG11dGF0ZShCbGFjayA9IGlmZWxzZShSQUNFID09ICIoMikgQkxBQ0siLCBUUlVFLCBGQUxTRSkpICU+JQ0KICBtdXRhdGUoV2hpdGUgPSBpZmVsc2UoUkFDRSA9PSAiKDEpIFdISVRFIiwgVFJVRSwgRkFMU0UpKSAlPiUNCiAgbXV0YXRlKE90aGVyID0gaWZlbHNlKFJBQ0UgPT0gIigzKSBPVEhFUiIsIFRSVUUsIEZBTFNFKSkgJT4lDQogIG11dGF0ZShNYWxlID0gaWZlbHNlKFNFWCA9PSAiKDEpIE1BTEUiLCBUUlVFLCBGQUxTRSkpICU+JQ0KICBtdXRhdGUoRmVtYWxlID0gaWZlbHNlKFNFWCA9PSAiKDIpIEZFTUFMRSIsIFRSVUUsIEZBTFNFKSkgLT4gZ3NzRGF0YXN1Yg0KYGBgDQoNCk5vdyB0aGF0IHRoZXNlIHZhcmlhYmxlcyBhcmUgYmluYXJ5LCB3ZSB3YW50IHRvIHJlYWQgdGhlbSBhcyBudW1lcmljIGRhdGEuDQoNCmBgYHtyIGJpbmFyeS1yYWNlLWdlbmRlcn0NCmdzc0RhdGFzdWIkQmxhY2sgPC0gYXMubnVtZXJpYyhnc3NEYXRhc3ViJEJsYWNrKQ0KZ3NzRGF0YXN1YiRXaGl0ZSA8LSBhcy5udW1lcmljKGdzc0RhdGFzdWIkV2hpdGUpDQpnc3NEYXRhc3ViJE90aGVyIDwtIGFzLm51bWVyaWMoZ3NzRGF0YXN1YiRPdGhlcikNCmdzc0RhdGFzdWIkTWFsZSA8LSBhcy5udW1lcmljKGdzc0RhdGFzdWIkTWFsZSkNCmdzc0RhdGFzdWIkRmVtYWxlIDwtIGFzLm51bWVyaWMoZ3NzRGF0YXN1YiRGZW1hbGUpDQpnc3NEYXRhc3ViJFJBQ0UgPC0gYXMubnVtZXJpYyhnc3NEYXRhc3ViJFJBQ0UpDQpnc3NEYXRhc3ViJE1hcnJpZWQgPC0gYXMubnVtZXJpYyhnc3NEYXRhc3ViJE1hcnJpZWQpDQpnc3NEYXRhc3ViJE5vdE1hcnJpZWQgPC0gYXMubnVtZXJpYyhnc3NEYXRhc3ViJE5vdE1hcnJpZWQpDQpgYGANCg0KTmV4dCB3ZSB3YW50IHRvIGZvbGxvdyB0aGUgc2FtZSBiaW5hcnkgdmFyaWFibGUgY3JlYXRpb24gcHJvY2VzcyBhcyB3ZSBqdXN0IGRpZCwgYnV0IGFwcGx5IGl0IHRvIHdvcmtpbmcgc3RhdHVzLg0KDQpgYGB7ciBiaW5hcnktdmFyaWFibGVzMX0NCmdzc0RhdGFzdWIgJT4lDQogIG11dGF0ZShGdWxsdGltZSA9IGlmZWxzZShXUktTVEFUID09ICIoMSkgV09SS0lORyBGVUxMVElNRSIsIFRSVUUsIEZBTFNFKSkgJT4lDQogIG11dGF0ZShQYXJ0dGltZSA9IGlmZWxzZShXUktTVEFUID09ICIoMikgV09SS0lORyBQQVJUVElNRSIsIFRSVUUsIEZBTFNFKSkgJT4lDQogIG11dGF0ZShOb3RXb3JraW5nID0gaWZlbHNlKFdSS1NUQVQgPT0gIigzKSBURU1QIE5PVCBXT1JLSU5HIiwgVFJVRSwgRkFMU0UpKSU+JQ0KICBtdXRhdGUoVW5lbXBsb3llZCA9IGlmZWxzZShXUktTVEFUID09ICIoNCkgVU5FTVBMLCBMQUlEIE9GRiIsIFRSVUUsIEZBTFNFKSkgJT4lDQogIG11dGF0ZShLZWVwaW5nSG91c2UgPSBpZmVsc2UoV1JLU1RBVCA9PSAiKDcpIEtFRVBJTkcgSE9VU0UiIHwgV1JLU1RBVCA9PSAiKDgpIE9USEVSIiwgVFJVRSwgRkFMU0UpKSAlPiUNCiAgbXV0YXRlKFJldGlyZWQgPSBpZmVsc2UoV1JLU1RBVCA9PSAiKDUpIFJFVElSRUQiLCBUUlVFLCBGQUxTRSkpICU+JQ0KICBtdXRhdGUoQXRTY2hvb2wgPSBpZmVsc2UoV1JLU1RBVCA9PSAiKDYpIFNDSE9PTCIsIFRSVUUsIEZBTFNFKSkgLT4gZ3NzRGF0YXN1Yg0KYGBgDQoNCmBgYHtyfQ0KZ3NzRGF0YXN1YiRGdWxsdGltZSA8LSBhcy5udW1lcmljKGdzc0RhdGFzdWIkRnVsbHRpbWUpDQpnc3NEYXRhc3ViJFBhcnR0aW1lIDwtIGFzLm51bWVyaWMoZ3NzRGF0YXN1YiRQYXJ0dGltZSkNCmdzc0RhdGFzdWIkTm90V29ya2luZyA8LSBhcy5udW1lcmljKGdzc0RhdGFzdWIkTm90V29ya2luZykNCmdzc0RhdGFzdWIkUmV0aXJlZCA8LSBhcy5udW1lcmljKGdzc0RhdGFzdWIkUmV0aXJlZCkNCmdzc0RhdGFzdWIkQXRTY2hvb2wgPC0gYXMubnVtZXJpYyhnc3NEYXRhc3ViJEF0U2Nob29sKQ0KZ3NzRGF0YXN1YiRLZWVwaW5nSG91c2UgPC0gYXMubnVtZXJpYyhnc3NEYXRhc3ViJEtlZXBpbmdIb3VzZSkNCmdzc0RhdGFzdWIkVW5lbXBsb3llZCA8LSBhcy5udW1lcmljKGdzc0RhdGFzdWIkVW5lbXBsb3llZCkNCmBgYA0KDQpXZSBhbHNvIHdhbnQgYWxsIG9mIHRoZSByZW1haW5pbmcgdmFyaWFibGVzLCBgSU5DT01FMTZgLCBgV1JLU1RBVGAsIGFuZCBgRURVQ2AgdG8gYmUgbnVtZXJpY2FsIHZhbHVlcyBzbyB0aGF0IHRoZXkgd2lsbCBhZGhlcmUgdG8gb3VyIHN0YXRpc3RpY2FsIHRlc3RzLg0KDQpgYGB7ciBudW1lcmljLXJlbWFpbmluZ30NCmdzc0RhdGFzdWIkSU5DT01FMTYgPC0gYXMubnVtZXJpYyhnc3NEYXRhc3ViJElOQ09NRTE2KQ0KZ3NzRGF0YXN1YiRXUktTVEFUIDwtIGFzLm51bWVyaWMoZ3NzRGF0YXN1YiRXUktTVEFUKQ0KZ3NzRGF0YXN1YiRFRFVDIDwtIGFzLm51bWVyaWMoZ3NzRGF0YXN1YiRFRFVDKQ0KYGBgDQoNCk5vdyB0aGF0IHdlIGhhdmUgY2xlYW5lZCB0aGUgZGF0YSwgd2Ugd2lsbCBhc3Nlc3MgbWlzc2luZyBkYXRhIHRoYXQgbWF5IGJlIHByZXZlbGFudCBhbmQgdGhlbiBnZXQgcmlkIG9mIGl0Lg0KDQpgYGB7ciBtaXNzaW5nLWRhdGF9DQptaXNzX3Zhcl9zdW1tYXJ5KGdzc0RhdGFzdWIpDQpgYGANCg0KYGBge3J9DQpnc3NEYXRhc3ViIDwtIG5hLm9taXQoZ3NzRGF0YXN1YikNCmBgYA0KDQpGaW5hbGx5LCBvdXIgZGF0YSBpcyBmdWxseSBjbGVhbmVkLCBhbmQgYWxsIG5lY2Vzc2FyeSB2YXJpYWJsZXMgd2VyZSBjb252ZXJ0ZWQgdG8gbnVtZXJpYyBhbmQgYmluYXJ5LiAgTm93IHdlIGNhbiBjcmVhdGUgYSBuZXcgc3Vic2V0IG9mIHRoZSBuZXcgdmFyaWFibGVzLCBhbmQgdGhlbiBleHBvcnQgaXQgYXMgYSAuY3N2IGZpbGUgdG8gb3VyIGRhdGEgZm9sZGVyLg0KDQpgYGB7cn0NCmdzc0RhdGFzdWIgJT4lDQogIHNlbGVjdChTRUkxMCwgSUQsIEFHRSwgSU5DT01FMTYsIC1XUktTVEFULCBFRFVDLCAtU1JDQkVMVCwgUkFDRSwgQmxhY2ssIFdoaXRlLCBPdGhlciwgTWFsZSwgRmVtYWxlLCBVcmJhbiwgRnVsbHRpbWUsIFBhcnR0aW1lLCBOb3RXb3JraW5nLCBVbmVtcGxveWVkLCBLZWVwaW5nSG91c2UsIFJldGlyZWQsIEF0U2Nob29sKSAtPiBnc3MyMDE2Q2xlYW4NCmBgYA0KDQpgYGB7cn0NCndyaXRlX2Nzdihnc3MyMDE2Q2xlYW4sIGhlcmUoImRhdGEiLCAiY2xlYW5EYXRhIiwgImdzczIwMTZDbGVhbi5jc3YiKSkNCmBgYA0KDQo=</div>
 
 
 

@@ -1,0 +1,91 @@
+---
+title: "Regression tests R Notebook"
+author: "Carter Hanford"
+date: '(`r format(Sys.time(), "%B %d, %Y")`)'
+output: 
+  github_document: default
+  html_notebook: default 
+---
+
+```{r}
+library(stargazer)
+library(dplyr)
+library(here)
+```
+
+## Model 1
+
+```{r}
+model1 <- lm(SEI10 ~ Black+Other, data = gss2016Clean)
+summary(model1)
+```
+
+```{r}
+confint(model1)
+```
+
+```{r}
+aic1 <- round(AIC(model1), digits = 3)
+bic1 <- round(BIC(model1), digits = 3)
+```
+
+## Model 2
+
+Adding independent variables related to class. 
+
+```{r}
+model2 <- lm(SEI10 ~ Black+Other+Urban, data = gss2016Clean)
+summary(model2)
+```
+
+```{r}
+aic2 <- round(AIC(model2), digits = 3)
+bic2 <- round(BIC(model2), digits = 3)
+```
+
+## Model 3
+
+```{r}
+model3 <- lm(SEI10 ~ Black+Other+Urban+Parttime+Unemployed+NotWorking+Retired+AtSchool+INCOME16, data = gss2016Clean)
+summary(model3)
+```
+
+```{r}
+aic3 <- round(AIC(model3), digits = 3)
+bic3 <- round(BIC(model3), digits = 3)
+```
+
+## Model 4
+
+```{r}
+model4 <- lm(SEI10 ~ Black+Other+Urban+Parttime+Unemployed+NotWorking+Retired+AtSchool+INCOME16+Female+EDUC, data = gss2016Clean)
+summary(model4)
+```
+
+```{r}
+aic4 <- round(AIC(model4), digits = 3)
+bic4 <- round(BIC(model4), digits = 3)
+```
+
+## Table for models
+
+```{r}
+stargazer(model1, model2, model3, model4, 
+          title = "SES Regression Tables",
+          add.lines = list(c("AIC", aic1, aic2, aic3, aic4), c("BIC", bic1, bic2, bic3, bic4)),
+          omit.stat = "rsq", df = FALSE,
+          type = "html", out = "models.html")
+```
+
+```{r}
+gss2016Clean %>%
+  select(Black, Other, INCOME16, PRESTG10, EDUC, WRKSTAT, Female) -> gss2016CleanSub
+```
+
+```{r}
+stargazer(data.frame(gss2016CleanSub),
+          title = "Descriptive Statistics",
+          summary = TRUE, omit.summary.stat = c("p25", "p75"),
+          type = "html", out = "SESdescriptives.html")
+```
+

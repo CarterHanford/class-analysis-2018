@@ -1,0 +1,20 @@
+---
+title: "Regression Equations Doc"
+author: "Carter Hanford"
+date: '(`r format(Sys.time(), "%B %d, %Y")`)'
+output: 
+  word_document:
+    reference_docx: ../data/style.docx
+---
+
+## Model 1
+
+${y}_{SEI10} = {b}_{0} + {b}_{1}{x}_{Black} + {b}_{2}{x}_{Other} + \epsilon$
+
+## Model 2
+
+${y}_{SEI10} = {b}_{0} + {b}_{1}{x}_{Black} + {b}_{2}{x}_{Other} + {b}_{3}{x}_{INCOME16} + {b}_{4}{x}_{PRESTG10} + {b}_{5}{x}_{WRKSTAT} + \epsilon$
+
+## Model 3
+
+${y}_{SEI10} = {b}_{0} + {b}_{1}{x}_{Black} + {b}_{2}{x}_{Other} + {b}_{3}{x}_{INCOME16} + {b}_{4}{x}_{PRESTG10} + {b}_{5}{x}_{WRKSTAT} + {b}_{6}{x}_{Female} \epsilon$

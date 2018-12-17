@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1543944120735.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3378533031",
+    "id" : "E3820879",
+    "lastKnownWriteTime" : 1543944621,
+    "last_content_update" : 1543944621602,
+    "path" : "~/GitHub/class-analysis-2018/documentation/handout.Rmd",
+    "project_path" : "documentation/handout.Rmd",
+    "properties" : {
+        "cursorPosition" : "9,53",
+        "last_setup_crc32" : "",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1542675525084.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3762483712",
+    "id" : "893D5F85",
+    "lastKnownWriteTime" : 1543943957,
+    "last_content_update" : 1543945730185,
+    "path" : "~/GitHub/class-analysis-2018/documentation/regression r notebook.Rmd",
+    "project_path" : "documentation/regression r notebook.Rmd",
+    "properties" : {
+        "chunk_output_type" : "inline",
+        "cursorPosition" : "71,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
