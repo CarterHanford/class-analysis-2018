@@ -1,2 +1,0 @@
-"0","p <- as.numeric(length(attr(model1$coefficients, ""names"")))"
-"0","n <- as.numeric(nrow(model1$model))"

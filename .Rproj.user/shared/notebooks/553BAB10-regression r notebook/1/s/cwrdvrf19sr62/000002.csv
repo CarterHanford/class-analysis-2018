@@ -1,2 +1,0 @@
-"0","aic2 <- round(AIC(model2), digits = 3)"
-"0","bic2 <- round(BIC(model2), digits = 3)"

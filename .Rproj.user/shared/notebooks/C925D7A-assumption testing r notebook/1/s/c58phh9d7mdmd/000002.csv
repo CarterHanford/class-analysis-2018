@@ -1,7 +1,0 @@
-"0","printObs <- function(.data, values){"
-"0","  "
-"0","  .data %>%"
-"0","    filter(row_number() %in% values) %>%"
-"0","    select(SEI10, ID, INCOME16, EDUC, Black, White, Other, Male, Female, Urban, Fulltime, Parttime, NotWorking, Retired, AtSchool)"
-"0","  "
-"0","}"

@@ -1,3 +1,0 @@
-"0","gssDatasub$INCOME16 <- as.numeric(gssDatasub$INCOME16)"
-"0","gssDatasub$WRKSTAT <- as.numeric(gssDatasub$WRKSTAT)"
-"0","gssDatasub$EDUC <- as.numeric(gssDatasub$EDUC)"

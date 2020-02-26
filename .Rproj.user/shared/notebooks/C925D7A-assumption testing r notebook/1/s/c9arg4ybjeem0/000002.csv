@@ -1,1 +1,0 @@
-"0","cooksDHalf <- which(cooks.distance(model1) > .5)"

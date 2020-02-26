@@ -1,2 +1,0 @@
-"0","gssDatasub %>%"
-"0","  select(SEI10, ID, AGE, INCOME16, -WRKSTAT, EDUC, -SRCBELT, RACE, Black, White, Other, Male, Female, Urban, Fulltime, Parttime, NotWorking, Unemployed, KeepingHouse, Retired, AtSchool) -> gss2016Clean"

@@ -1,4 +1,0 @@
-"0","bonferonni <- outlierTest(model1)"
-"0","bonferonni <- as.numeric(attr(bonferonni$p, ""names""))"
-"0","printObs(gss2016Clean, values = bonferonni)"
-"2","package ‘bindrcpp’ was built under R version 3.5.1"

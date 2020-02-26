@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r}
-library(stargazer)
+library(stargazer) # model output
 library(dplyr)
 library(here)
 ```

@@ -1,2 +1,0 @@
-"0","gssData %>%"
-"0","  mutate(Urban = ifelse(SRCBELT == ""(1) 12 LRGST SMSA'S"" | SRCBELT == ""(2) SMSA'S 13-100"" | SRCBELT == ""(3) SUBURB, 12 LRGST"" | SRCBELT == ""(5) OTHER URBAN"", TRUE, FALSE)) -> gssDatasub"

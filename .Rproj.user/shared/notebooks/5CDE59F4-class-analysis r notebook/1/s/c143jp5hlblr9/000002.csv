@@ -1,2 +1,0 @@
-"0","gss16 %>%"
-"0","  select(SEI10, ID, SEX, RACE, AGE, INCOME16, WRKSTAT, EDUC, SRCBELT, MARITAL) -> gssData"
